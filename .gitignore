@@ -1,0 +1,9 @@
+.*
+!.gitignore
+.idea
+*.iml
+*.ipr
+*.iws
+target
+*.log
+ui/src/dist
