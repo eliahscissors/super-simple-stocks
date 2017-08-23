@@ -10,6 +10,7 @@ import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.jpmorgan.codingassignment.supersimplestocks.model.TradeRecord.TradeType;
@@ -76,6 +77,7 @@ public class StockPriceAndShareIndexTest {
                 .withStockPrice(new BigDecimal(args[1]))
                 .withTradeType(TradeType.valueOf(args[2]))
                 .withTradeUnits(new BigInteger(args[3]))
+                .withTradeTime(LocalDateTime.now())
                 .build();
     }
 

@@ -2,7 +2,7 @@ package com.jpmorgan.codingassignment.supersimplestocks.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 /**
  * TradeRecord
@@ -17,7 +17,7 @@ public class TradeRecord {
     private TradeType tradeType;
     private BigDecimal stockPrice;
     private BigInteger tradeUnits;
-    private ZonedDateTime dateTime;
+    private LocalDateTime tradeTime;
 
     private TradeRecord() {}
 
@@ -33,8 +33,8 @@ public class TradeRecord {
         return tradeUnits;
     }
 
-    public ZonedDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getTradeTime() {
+        return tradeTime;
     }
 
     public TradeType getTradeType() {
@@ -50,9 +50,7 @@ public class TradeRecord {
 
         if (!stockRecord.equals(that.stockRecord)) return false;
         if (tradeType != that.tradeType) return false;
-        if (!stockPrice.equals(that.stockPrice)) return false;
-        if (!tradeUnits.equals(that.tradeUnits)) return false;
-        return dateTime.equals(that.dateTime);
+        return stockPrice.equals(that.stockPrice) && tradeUnits.equals(that.tradeUnits) && tradeTime.equals(that.tradeTime);
     }
 
     @Override
@@ -61,7 +59,7 @@ public class TradeRecord {
         result = 31 * result + tradeType.hashCode();
         result = 31 * result + stockPrice.hashCode();
         result = 31 * result + tradeUnits.hashCode();
-        result = 31 * result + dateTime.hashCode();
+        result = 31 * result + tradeTime.hashCode();
         return result;
     }
 
@@ -94,12 +92,27 @@ public class TradeRecord {
             return this;
         }
 
-        public Builder withDateTime(ZonedDateTime dateTime) {
-            result.dateTime = dateTime;
+        public Builder withTradeTime(LocalDateTime dateTime) {
+            result.tradeTime = dateTime;
             return this;
         }
 
         public TradeRecord build() {
+            if (result.stockRecord == null) {
+                throw new IllegalStateException("Trade stock record is not defined");
+            }
+            if (result.tradeType == null) {
+                throw new IllegalStateException("Trade type is not defined");
+            }
+            if (result.stockPrice == null || result.stockPrice.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalStateException("Trade stock price is not positive");
+            }
+            if (result.tradeUnits == null || result.tradeUnits.compareTo(BigInteger.ZERO) <= 0) {
+                throw new IllegalStateException("Traded units is not positive");
+            }
+            if (result.tradeTime == null) {
+                throw new IllegalStateException("Trade time is not defined");
+            }
             return result;
         }
     }

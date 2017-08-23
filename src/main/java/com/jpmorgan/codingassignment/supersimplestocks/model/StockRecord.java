@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  */
 public class StockRecord {
 
-    public enum StockType {Common, Preferred}
+    public enum StockType {COMMON, PREFERRED}
 
     private String symbol;
     private StockType stockType;
@@ -38,11 +38,7 @@ public class StockRecord {
     public BigDecimal getFixedDividend() {
         return fixedDividend;
     }
-
-    public boolean hasFixedDivident() {
-        return stockType == StockType.Common;
-    }
-
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,6 +92,18 @@ public class StockRecord {
         }
 
         public StockRecord build() {
+            if (result.symbol == null || result.symbol.isEmpty()) {
+                throw new IllegalStateException("Stock symbol cannot be empty");
+            }
+            if (result.stockType == null) {
+                throw new IllegalStateException("Stock type is not defined");
+            }
+            if (result.parValue == null) {
+                throw new IllegalStateException("Stock par value is not defined");
+            }
+            if (result.fixedDividend == null && result.stockType == StockType.PREFERRED) {
+                throw new IllegalStateException("Stock of preferred type doesn't have fixed dividend");
+            }
             return result;
         }
     }

@@ -5,7 +5,7 @@ import com.jpmorgan.codingassignment.supersimplestocks.model.TradeRecord;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +35,9 @@ public class SimpleStockExchangeService implements StockExchangeService {
 
     private BigDecimal calculateStockPrice(StockRecord stockRecord) {
         BigDecimal result = null;
+        LocalDateTime timeHorizon = LocalDateTime.now().minusMinutes(15);
         List<TradeRecord>  tradeRecords = tradeLedger.stream()
+                .filter(it -> it.getTradeTime().isAfter(timeHorizon))
                 .filter(it -> it.getStockRecord().equals(stockRecord)).collect(Collectors.toList());
         if (!tradeRecords.isEmpty()) {
             BigDecimal tradedVolume = tradeRecords.stream()
@@ -90,7 +92,7 @@ public class SimpleStockExchangeService implements StockExchangeService {
             .withTradeType(tradeType)
             .withStockPrice(stockPrice)
             .withTradeUnits(tradeVolume)
-            .withDateTime(ZonedDateTime.now())
+            .withTradeTime(LocalDateTime.now())
             .build();
         tradeLedger.add(tradeRecord);
         priceRecord.tickerPrice = stockPrice;
